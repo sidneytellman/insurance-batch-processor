@@ -35,4 +35,28 @@ public class PolicyRepository {
     public List<Policy> getPolicies() {
         return Collections.unmodifiableList(policies);
     }
+
+    public void addClaim(Claim claim) {
+        if (claim == null) {
+            throw new IllegalArgumentException("Claim cannot be null.");
+        }
+        if (findByPolicyNumber(claim.getPolicyNumber()).isEmpty()) {
+            throw new IllegalArgumentException("Cannot add claim: no policy with number " + claim.getPolicyNumber() + " exists.");
+        }
+        claims.add(claim);
+    }
+
+    public List<Claim> getClaims() {
+        return Collections.unmodifiableList(claims);
+    }
+
+    public List<Claim> getUnpaidApprovedClaims() {
+        List<Claim> result = new ArrayList<>();
+        for (Claim claim : claims) {
+            if (claim.isApproved() && !claim.isPaid()) {
+                result.add(claim);
+            }
+        }
+        return result;
+    }
 }
