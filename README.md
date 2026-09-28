@@ -1,36 +1,44 @@
-# Planeringsmall — Projektskiss
+## Insurance Batch Processor
 
-Fyll i denna mall innan ni börjar koda. Skissen är ett första utkast, inte ett facit — det är både normalt och förväntat att klassnamn och struktur ändras när ni väl börjar implementera. Spara den ifyllda mallen som README i er första commit, tillsammans med namn på den/de som jobbar i projektet.
-
-## Working Title
-
-En till två meningar: vilken domän, och vad programmet ska göra.
+A console application that manages and runs an insurance company's batch jobs (premium recalculation, claims settlement and renewal notices) against a register of insurance policies. The user can add, run, search and retry jobs, and view a batch run report.
 
 ## Superklass
 
-- Namn:
-- Gemensamma fält:
-- Gemensamma metoder:
+- Namn: Sidney Tellman
+- Gemensamma fält: jobId, name, status (`JobStatus`: PENDING, COMPLETED, FAILED), retryCount
+- Gemensamma metoder: `execute(PolicyRepository repo)`, `estimateRuntimeMinutes()`, `getDetails()`
 
-## Subklasser (minst tre)
+## Subklasser 
 
-1. Namn — vad gör den annorlunda, vilka metoder overridas?
-2. Namn — vad gör den annorlunda, vilka metoder overridas?
-3. Namn — vad gör den annorlunda, vilka metoder overridas?
+1. Namn — `PremiumCalculationJob — recalculates premiums using an index increase in percent. Overrides `execute()` and `estimateRuntimeMinutes()`.
+2. Namn — `ClaimsSettlementJob` — pays out approved claims and fails if a claim exceeds the policy's coverage amount. Overrides `execute()` and `estimateRuntimeMinutes()`.
+3. Namn — finds policies expiring within a given number of days and generates renewal notices. Overrides `execute()` and `estimateRuntimeMinutes()`.
+
 
 ## Interface
 
-- Namn:
-- Metod(er):
-- Implementeras av (minst två subklasser):
+- Namn: `Retryable`
+- Metod(er): `canRetry()`, `retry(PolicyRepository repo)`
+- Implementeras av `PremiumCalculationJob`, `ClaimsSettlementJob`
+
 
 ## Meny
 
-Lista minst fyra åtgärder kopplade till samlingen (t.ex. lägga till, ta bort, söka, samt en egen åtgärd som passar er domän).
-
+1. Add job
+2. Remove job
+3. Run job by job ID
+4. Run all pending jobs
+5. Search jobs by status
+6. Retry failed jobs
+7. Show batch run report (success rate, total runtime, failed jobs)
+0. Exit
 ## Felscenarion
 
-Minst två konkreta situationer i just ert program som kan gå fel och som ni behöver hantera (inte generella exempel).
+- A claim in `ClaimsSettlementJob` exceeds the policy's coverage amount → `JobExecutionException`, and the job is marked FAILED.
+- The user tries to run a job that is already COMPLETED → `InvalidJobStateException`.
+- The user enters a job ID that doesn't exist → `JobNotFoundException`.
+- A job is created with an empty name or a negative index percentage → `IllegalArgumentException` in the constructor.
+
 
 ## Motivering (fylls i senare i veckan)
 
