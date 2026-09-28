@@ -2,7 +2,6 @@ package job;
 
 import model.JobStatus;
 import service.PolicyRepository;
-import service.PolicyRepository;
 
 public abstract class BatchJob {
 
@@ -56,6 +55,8 @@ public abstract class BatchJob {
     public String getDetails() {
         return jobId + " | " + name + " | " + status;
     }
+
+    public abstract void execute(PolicyRepository repository);
+
+    public abstract int estimateRuntimeMinutes(PolicyRepository repository);
 }
-public abstract void execute(PolicyRepository repository);
-public abstract int estimateRuntimeMinutes(PolicyRepository repository);
