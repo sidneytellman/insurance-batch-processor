@@ -1,10 +1,12 @@
 package service;
 
+import job.Retryable;
 import exception.InvalidJobStateException;
 import exception.JobExecutionException;
 import model.JobStatus;
 import exception.JobNotFoundException;
 import job.BatchJob;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,6 +78,47 @@ public class JobRegister {
             }
         }
         return result;
+    }
+
+    public List<Retryable> getRetryableJobs() {
+        List<Retryable> result = new ArrayList<>();
+        for (BatchJob job : jobs) {
+            if (job instanceof Retryable retryable) {
+                result.add(retryable);
+            }
+        }
+        return result;
+    }
+
+    public List<String> retryFailedJobs() {
+        List<String> failures = new ArrayList<>();
+        for (Retryable job : getRetryableJobs()) {
+            if (job.canRetry()) {
+                try {
+                    job.retry(repository);
+                } catch (JobExecutionException e) {
+                    failures.add(e.getMessage());
+                }
+            }
+        }
+        return failures;
+    }
+
+    public int getTotalEstimatedRuntime() {
+        int total = 0;
+        for (BatchJob job : findByStatus(JobStatus.PENDING)) {
+            total += job.estimateRuntimeMinutes(repository);
+        }
+        return total;
+    }
+
+    public double getSuccessRate() {
+        int completed = findByStatus(JobStatus.COMPLETED).size();
+        int failed = findByStatus(JobStatus.FAILED).size();
+        if (completed + failed == 0) {
+            return 0;
+        }
+        return completed * 100.0 / (completed + failed);
     }
 
     public List<BatchJob> getJobs() {
