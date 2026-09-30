@@ -47,9 +47,9 @@ public class Claim {
         return paid;
     }
 
-    public void markasPaid() {
+    public void markAsPaid() {
         if (paid) {
-            throw new IllegalStateException("Claim" + claimId + " has already been paid. ");
+            throw new IllegalStateException("Claim " + claimId + " has already been paid.");
         }
         paid = true;
     }
