@@ -1,11 +1,13 @@
 package job;
 
+import exception.InvalidJobStateException;
 import exception.JobExecutionException;
 import model.Claim;
+import model.JobStatus;
 import model.Policy;
 import service.PolicyRepository;
 
-public class ClaimsSettlementJob extends BatchJob {
+public class ClaimsSettlementJob extends BatchJob implements Retryable {
 
     public ClaimsSettlementJob(String jobId, String name) {
         super(jobId, name);
@@ -33,5 +35,19 @@ public class ClaimsSettlementJob extends BatchJob {
     @Override
     public String getDetails() {
         return super.getDetails() + " | Settles approved claims";
+    }
+
+    @Override
+    public boolean canRetry() {
+        return getStatus() == JobStatus.FAILED && getRetryCount() < MAX_RETRIES;
+    }
+
+    @Override
+    public void retry(PolicyRepository repository) {
+        if (!canRetry()) {
+            throw new InvalidJobStateException("Job " + getJobId() + " cannot be retried: status is " + getStatus() + ", retries used " + getRetryCount() + " of " + MAX_RETRIES + ".");
+        }
+        incrementRetryCount();
+        execute(repository);
     }
 }
