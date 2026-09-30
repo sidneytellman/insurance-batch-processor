@@ -2,7 +2,7 @@ package job;
 
 import service.PolicyRepository;
 
-public interface Rertyable {
+public interface Retryable {
 
     int MAX_RETRIES = 3;
 
