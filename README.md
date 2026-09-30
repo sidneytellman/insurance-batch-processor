@@ -12,7 +12,7 @@ A console application that manages and runs an insurance company's batch jobs (p
 - Gemensamma fält: jobId, name, status (`JobStatus`: PENDING, COMPLETED, FAILED), retryCount
 - Gemensamma metoder: `execute(PolicyRepository repo)`, `estimateRuntimeMinutes()`, `getDetails()`
 
-## Subklasser (minst tre)
+## Subklasser 
 
 1. `PremiumCalculationJob` — recalculates premiums using an index increase in percent. Overrides `execute()` and `estimateRuntimeMinutes()`.
 2. `ClaimsSettlementJob` — pays out approved claims and fails if a claim exceeds the policy's coverage amount. Overrides `execute()` and `estimateRuntimeMinutes()`.
