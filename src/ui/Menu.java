@@ -1,6 +1,5 @@
 package ui;
 
-
 import exception.InvalidJobStateException;
 import exception.JobExecutionException;
 import exception.JobNotFoundException;
@@ -50,7 +49,11 @@ public class Menu {
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid input: " + e.getMessage());
             }
-            System.out.println();
+            if (running) {
+                System.out.println();
+                input.waitForEnter();
+                System.out.println();
+            }
         }
         System.out.println("Goodbye.");
     }
@@ -156,7 +159,3 @@ public class Menu {
         }
     }
 }
-
-
-
-

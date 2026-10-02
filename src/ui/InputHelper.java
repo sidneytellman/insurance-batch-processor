@@ -73,4 +73,7 @@ public class InputHelper {
             }
         }
     }
+    public void waitForEnter() {
+        readLine("Press Enter to return to the menu...");
+    }
 }
