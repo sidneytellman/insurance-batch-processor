@@ -105,7 +105,7 @@ public class Menu {
         if (failures.isEmpty()) {
             System.out.println("All pending jobs completed");
         } else {
-            System.out.println(failures.size() + " jobs failed:");
+            System.out.println(failures.size() + " job(s) failed:");
             failures.forEach(f -> System.out.println(" - " + f));
         }
     }

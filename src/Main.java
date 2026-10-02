@@ -39,5 +39,6 @@ public class Main {
         repository.addClaim(new Claim("C-502", "P-1002", 4_300, true));
         repository.addClaim(new Claim("C-503", "P-1003", 27_000, false));
         repository.addClaim(new Claim("C-504", "P-1005", 8_750, true));
+        repository.addClaim(new Claim("C-505", "P-1004", 900_000, true));
     }
 }
