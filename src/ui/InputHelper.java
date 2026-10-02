@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class InputHelper {
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public InputHelper(Scanner scanner) {
         this.scanner = scanner;
@@ -30,6 +30,21 @@ public class InputHelper {
         }
     }
 
+    public int readIntInRange(String prompt, int min, int max) {
+        while (true) {
+            String input = readLine(prompt);
+            try {
+                int value = Integer.parseInt(input);
+                if (value >= min && value <= max) {
+                    return value;
+                }
+                System.out.println("Input must be a number between " + min + " and " + max + ".");
+            } catch (NumberFormatException e) {
+                System.out.println("'" + input + "' is not a whole number. Try again.");
+            }
+        }
+    }
+
     public double readDoubleInRange(String prompt, double min, double max) {
         while (true) {
             String input = readLine(prompt).replace(',', '.');
@@ -49,11 +64,9 @@ public class InputHelper {
         while (true) {
             String input = readLine(prompt).toLowerCase();
             switch (input) {
-                case "y", "yes", "j", "ja"
-                    ;
+                case "y", "yes", "j", "ja":
                     return true;
-                case "n", "no", "nej"
-                    ;
+                case "n", "no", "nej":
                     return false;
                 default:
                     System.out.println("Please answer y or n");
