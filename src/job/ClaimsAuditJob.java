@@ -30,3 +30,39 @@ public class ClaimsAuditJob extends BatchJob {
         }
         this.threshold = threshold;
     }
+
+    /**
+     * Prints every approved claim above the threshold, followed by how many were flagged.
+     *
+     * @param repository the claims to check
+     */
+    @Override
+    public void execute(PolicyRepository repository) {
+        int flagged = 0;
+        for (Claim claim : repository.getClaims()) {
+            if (claim.isApproved() && claim.getAmount() > threshold) {
+                System.out.println("Flagged for review: claim " + claim.getClaimId()
+                        + " on policy " + claim.getPolicyNumber() + " (" + claim.getAmount() + " kr).");
+                flagged++;
+            }
+        }
+        System.out.println(flagged + " claim(s) flagged.");
+        markCompleted();
+    }
+
+    /**
+     * Estimates one minute plus one extra minute per 200 claims.
+     *
+     * @param repository the claims the job would check
+     * @return estimated runtime in minutes
+     */
+    @Override
+    public int estimateRuntimeMinutes(PolicyRepository repository) {
+        return 1 + repository.getClaims().size() / 200;
+    }
+
+    @Override
+    public String getDetails() {
+        return super.getDetails() + " | Flags approved claims above " + threshold + " kr";
+    }
+}
