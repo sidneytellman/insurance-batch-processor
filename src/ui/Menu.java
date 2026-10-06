@@ -4,11 +4,10 @@ import exception.InvalidJobStateException;
 import exception.JobExecutionException;
 import exception.JobNotFoundException;
 import job.BatchJob;
-import job.ClaimsSettlementJob;
-import job.PremiumCalculationJob;
-import job.RenewalNoticeJob;
 import model.JobStatus;
 import service.JobRegister;
+import job.JobFactory;
+import job.JobType;
 
 import java.util.List;
 
@@ -76,21 +75,25 @@ public class Menu {
     }
 
     private void addJob() {
+        JobType[] types = JobType.values();
         System.out.println("Job type");
-        System.out.println("1. Premium calculation");
-        System.out.println("2. Claims settlement");
-        System.out.println("3. Renewal notice");
-        int type = input.readIntInRange("Choose job type: ", 1, 3);
+        for (int i = 0; i < types.length; i++) {
+            System.out.println((i + 1) + ". " + types[i].getDisplayName());
+        }
+        JobType type = types[input.readIntInRange("Choose job type: ", 1, types.length) - 1];
         String id = input.readNonEmptyString("Job ID: ");
         String name = input.readNonEmptyString("Job name: ");
 
-        BatchJob job = switch (type) {
-            case 1 -> new PremiumCalculationJob(id, name, input.readDoubleInRange("Index increase (%): ", 0, 100));
-            case 2 -> new ClaimsSettlementJob(id, name);
-            default ->
-                    new RenewalNoticeJob(id, name, input.readIntInRange("Notify policies expiring within how many days: ", 1, 365));
-        };
-        register.addJob(job);
+        double parameter = 0;
+        if (type.hasParameter()) {
+            if (type.isWholeNumber()) {
+                parameter = input.readIntInRange(type.getParameterPrompt(), (int) type.getMin(), (int) type.getMax());
+            } else {
+                parameter = input.readDoubleInRange(type.getParameterPrompt(), type.getMin(), type.getMax());
+            }
+        }
+
+        register.addJob(JobFactory.create(type, id, name, parameter));
         System.out.println("Job " + id + " added");
     }
 
