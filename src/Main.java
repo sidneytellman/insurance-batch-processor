@@ -1,4 +1,6 @@
 import job.ClaimsSettlementJob;
+import job.JobFactory;
+import job.JobType;
 import job.PremiumCalculationJob;
 import job.RenewalNoticeJob;
 import model.Claim;
@@ -7,13 +9,24 @@ import service.JobRegister;
 import service.PolicyRepository;
 import ui.InputHelper;
 import ui.Menu;
-import job.JobFactory;
-import job.JobType;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 
+/**
+ * Starting point of the Insurance Batch Processor.
+ * <p>
+ * Creates sample policies, claims and one job of each type, then starts the menu.
+ * Claim C-505 deliberately exceeds its policy's coverage, so the claims
+ * settlement job fails and the retry and error handling can be demonstrated.
+ */
 public class Main {
 
+    /**
+     * Sets up the sample data and starts the menu.
+     *
+     * @param args not used
+     */
     public static void main(String[] args) {
         PolicyRepository repository = new PolicyRepository();
         addSampleData(repository);
@@ -28,6 +41,12 @@ public class Main {
         new Menu(register, input).start();
     }
 
+    /**
+     * Adds five policies and five claims. Expiry dates are relative to today,
+     * so the renewal job always finds policies to notify.
+     *
+     * @param repository where the sample data is stored
+     */
     private static void addSampleData(PolicyRepository repository) {
         LocalDate today = LocalDate.now();
 

@@ -4,23 +4,43 @@ import exception.InvalidJobStateException;
 import exception.JobExecutionException;
 import exception.JobNotFoundException;
 import job.BatchJob;
-import model.JobStatus;
-import service.JobRegister;
 import job.JobFactory;
 import job.JobType;
+import model.JobStatus;
+import service.JobRegister;
 
 import java.util.List;
 
+/**
+ * Console menu for managing and running batch jobs.
+ * <p>
+ * This class only talks to the user: it shows options, reads input through
+ * {@link InputHelper} and prints results. All rules and calculations live in
+ * {@link JobRegister} and the job classes.
+ * <p>
+ * Each custom exception is caught in its own catch block with its own message,
+ * so an error never stops the program.
+ */
 public class Menu {
 
     private final JobRegister register;
     private final InputHelper input;
 
+    /**
+     * Creates a menu for the given register.
+     *
+     * @param register the jobs to manage
+     * @param input    helper for reading validated input
+     */
     public Menu(JobRegister register, InputHelper input) {
         this.register = register;
         this.input = input;
     }
 
+    /**
+     * Shows the menu and handles choices until the user chooses 0 to exit.
+     * After each action, waits for Enter so the result stays visible.
+     */
     public void start() {
         boolean running = true;
         while (running) {
@@ -57,7 +77,7 @@ public class Menu {
         System.out.println("Goodbye.");
     }
 
-    public void printMenu() {
+    private void printMenu() {
         System.out.println("=== Insurance Batch Processor ===");
         System.out.println("1. List all jobs");
         System.out.println("2. Add a job");
@@ -74,6 +94,11 @@ public class Menu {
         printJobs(register.getJobs());
     }
 
+    /**
+     * Asks for a job type, ID, name and (if the type needs one) a parameter,
+     * then creates the job through {@link JobFactory}. The type list comes from
+     * {@link JobType#values()}, so new job types appear here without changes to this class.
+     */
     private void addJob() {
         JobType[] types = JobType.values();
         System.out.println("Job type");
