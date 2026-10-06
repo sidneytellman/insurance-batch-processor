@@ -7,7 +7,8 @@ import service.JobRegister;
 import service.PolicyRepository;
 import ui.InputHelper;
 import ui.Menu;
-
+import job.JobFactory;
+import job.JobType;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -21,6 +22,7 @@ public class Main {
         register.addJob(new PremiumCalculationJob("J-001", "Annual premium indexation", 3.5));
         register.addJob(new ClaimsSettlementJob("J-002", "Nightly settlement"));
         register.addJob(new RenewalNoticeJob("J-003", "Monthly renewal notices", 30));
+        register.addJob(JobFactory.create(JobType.CLAIMS_AUDIT, "J-004", "High-value claims audit", 10_000));
 
         InputHelper input = new InputHelper(new Scanner(System.in));
         new Menu(register, input).start();
